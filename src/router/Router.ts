@@ -1,11 +1,11 @@
-import express, { Request, Response,  } from "express";
+import express, { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { Recipes } from "../entity/Recipes";
 import { Ingredients } from "../entity/Ingredients";
 import { request } from "http";
 import bodyParser from "body-parser";
 import paginate from "express-paginate";
-import { Like } from "typeorm"
+import { Like } from "typeorm";
 
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
@@ -15,34 +15,32 @@ const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
 
 AppDataSource.initialize()
-    .then(() => {
-        // here you can start to work with your database
-    })
-    .catch((error) => console.log(error));
-    
-Router.get("/", async (req: Request, res: Response) => {
-    try {
-      // const items: Item[] = await ItemService.findAll();
-      const items = await recipeRepository.find();
-      const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
-      const itemCount: number = items.length; // Tổng số công thức
-      const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
-      const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
-      const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
-      const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
-      const recipeList = items.slice(startIndex, endIndex);
-      res.render("index", {
-        items: recipeList,
-        pageCount,
-        itemCount,
-        pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
-      });
-    } catch (e: any) {
-      res.status(500).send(e.message);
-    }
-  }
-);
+  .then(() => {
+    // here you can start to work with your database
+  })
+  .catch((error) => console.log(error));
 
+Router.get("/", async (req: Request, res: Response) => {
+  try {
+    // const items: Item[] = await ItemService.findAll();
+    const items = await recipeRepository.find();
+    const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
+    const itemCount: number = items.length; // Tổng số công thức
+    const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
+    const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
+    const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
+    const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
+    const recipeList = items.slice(startIndex, endIndex);
+    res.render("index", {
+      items: recipeList,
+      pageCount,
+      itemCount,
+      pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
+    });
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+});
 
 Router.post("/", async (req: Request, res: Response) => {
   try {
@@ -69,119 +67,111 @@ Router.post("/", async (req: Request, res: Response) => {
 
     const items = await recipeRepository.find();
 
-
-
-        res.render("index",{items})
-    } catch (e:any) {
-        res.status(500).send(e.message);
-    }
-    });
-
-
-Router.get("/:id", async (req: Request, res: Response) => {
-    const id: any = parseInt(req.params.id, 10);
-    try {
-        if(!isNaN(id))
-        {
-            const reci = await recipeRepository.findOneBy({
-                id:id
-        })
-        const item = await ingreRepository.findOneBy({
-           id_recip:reci
-        });
-        
-        const igre = [item.ingredients1,item.ingredients2,item.ingredients3,item.ingredients4,item.ingredients5,item.ingredients6]
-        console.log(igre)
-
-        if(item){
-        res.render("detail",{igre,reci});   
-        }
-
-        }
-
-        else if(req.params.id=="add")
-        {
-            res.render("addRecipe")
-        }
-    }
-    
-   catch (e: any) {
+    res.render("index", { items });
+  } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
 
+Router.get("/:id", async (req: Request, res: Response) => {
+  const id: any = parseInt(req.params.id, 10);
+  try {
+    if (!isNaN(id)) {
+      const reci = await recipeRepository.findOneBy({
+        id: id,
+      });
+      const item = await ingreRepository.findOneBy({
+        id_recip: reci,
+      });
 
-Router.get("/edit/(:id)" ,async (req :Request,res: Response)=>{
-    const id: any = parseInt(req.params.id, 10);
-    const recip = await recipeRepository.findOneBy({
-        id: id
-    })
+      const igre = [
+        item.ingredients1,
+        item.ingredients2,
+        item.ingredients3,
+        item.ingredients4,
+        item.ingredients5,
+        item.ingredients6,
+      ];
+      console.log(igre);
 
-    const ingre = await ingreRepository.findOneBy({
-        id_recip: recip
-    })
-    console.log(ingre)
-
-    res.render("editRecipe",{recip,ingre})
-})
-
-Router.post("/update/:id",async (req :Request,res: Response) =>{
-    const id : any = parseInt(req.params.id,10);
-    const item = req.body
-    const recipeUpdate =await recipeRepository.findOneBy({
-        id : id
-    });
-    const ingreUpdate =await ingreRepository.findOneBy({
-        id_recip:recipeUpdate
-    });
-    
-    //
-    recipeUpdate.title = item.title
-    recipeUpdate.imageUrl= item.image
-    recipeUpdate.publisher=item.publisher
-    recipeUpdate.publisherUrl =item.PublisherURL
-    recipeUpdate.timetocook = item.cookingTime
-    recipeRepository.save(recipeUpdate)
-    //
-    ingreUpdate.ingredients1 = item.ingredient1
-    ingreUpdate.ingredients2 = item.ingredient2
-    ingreUpdate.ingredients3 = item.ingredient3
-    ingreUpdate.ingredients4 = item.ingredient4
-    ingreUpdate.ingredients5 = item.ingredient5
-    ingreUpdate.ingredients6 = item.ingredient6
-    ingreUpdate.id_recip = recipeUpdate
- 
-    ingreRepository.save(ingreUpdate)
-    
-
-    const items = await recipeRepository.find() 
-    res.redirect("/")
+      if (item) {
+        res.render("detail", { igre, reci });
+      }
+    } else if (req.params.id == "add") {
+      res.render("addRecipe");
+    }
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
 });
 
+Router.get("/edit/(:id)", async (req: Request, res: Response) => {
+  const id: any = parseInt(req.params.id, 10);
+  const recip = await recipeRepository.findOneBy({
+    id: id,
+  });
+
+  const ingre = await ingreRepository.findOneBy({
+    id_recip: recip,
+  });
+  console.log(ingre);
+
+  res.render("editRecipe", { recip, ingre });
+});
+
+Router.post("/update/:id", async (req: Request, res: Response) => {
+  const id: any = parseInt(req.params.id, 10);
+  const item = req.body;
+  const recipeUpdate = await recipeRepository.findOneBy({
+    id: id,
+  });
+  const ingreUpdate = await ingreRepository.findOneBy({
+    id_recip: recipeUpdate,
+  });
+
+  //
+  recipeUpdate.title = item.title;
+  recipeUpdate.imageUrl = item.image;
+  recipeUpdate.publisher = item.publisher;
+  recipeUpdate.publisherUrl = item.PublisherURL;
+  recipeUpdate.timetocook = item.cookingTime;
+  recipeRepository.save(recipeUpdate);
+  //
+  ingreUpdate.ingredients1 = item.ingredient1;
+  ingreUpdate.ingredients2 = item.ingredient2;
+  ingreUpdate.ingredients3 = item.ingredient3;
+  ingreUpdate.ingredients4 = item.ingredient4;
+  ingreUpdate.ingredients5 = item.ingredient5;
+  ingreUpdate.ingredients6 = item.ingredient6;
+  ingreUpdate.id_recip = recipeUpdate;
+
+  ingreRepository.save(ingreUpdate);
+
+  const items = await recipeRepository.find();
+  res.redirect("/");
+});
 
 //Delete  recipe
-Router.delete("/(:id)" , async (req :Request,res: Response)=>{
-    const id:number = parseInt(req.params.id,10)
-    const recipe = await recipeRepository.findOneBy({
-        id:id
-    })
-    const ingre = await ingreRepository.findOneBy({
-        id_recip : recipe
-    })
-    await ingreRepository.remove(ingre)
-    await recipeRepository.remove(recipe)
-    res.redirect("/")
-})
+Router.delete("/(:id)", async (req: Request, res: Response) => {
+  const id: number = parseInt(req.params.id, 10);
+  const recipe = await recipeRepository.findOneBy({
+    id: id,
+  });
+  const ingre = await ingreRepository.findOneBy({
+    id_recip: recipe,
+  });
+  await ingreRepository.remove(ingre);
+  await recipeRepository.remove(recipe);
+  res.redirect("/");
+});
 
-//searching recipe
-// Router.post("/search",async (req :Request,res:Response)=>
-// {
-//     const name = req.body.search
-    
-//     const items =await recipeRepository.findBy({
-//         title: Like('%'+name+'%') 
-//     })
+// searching recipe
+Router.post("/search", async (req: Request, res: Response) => {
+  const name = req.body.search;
 
-//     res.render("index",{items})
+  const items = await recipeRepository.findBy({
+    title: Like("%" + name + "%"),
+  });
 
-// })
+  res.render("search", { items });
+});
