@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source";
 import { Recipes } from "../entity/Recipes";
 import { Ingredients } from "../entity/Ingredients";
 import { request } from "http";
+import { Like } from "typeorm"
 
 export const Router = express.Router();
 
@@ -14,7 +15,7 @@ AppDataSource.initialize()
         // here you can start to work with your database
     })
     .catch((error) => console.log(error));
-    
+//Get all data
 Router.get("/", async (req: Request, res: Response) => {
     try {
         // const items: Item[] = await ItemService.findAll();
@@ -26,7 +27,7 @@ Router.get("/", async (req: Request, res: Response) => {
     }
     });
 
-
+//Add data to recipe and ingredinents
 Router.post("/", async (req: Request, res: Response) => {
     try {
        
@@ -56,13 +57,13 @@ Router.post("/", async (req: Request, res: Response) => {
 
         const items = await recipeRepository.find() 
 
-        res.render("index",{items})
+        res.redirect("/")
     } catch (e:any) {
         res.status(500).send(e.message);
     }
     });
 
-
+//Get recipe by id or open add data form
 Router.get("/:id", async (req: Request, res: Response) => {
     const id: any = parseInt(req.params.id, 10);
     try {
@@ -76,7 +77,7 @@ Router.get("/:id", async (req: Request, res: Response) => {
         });
         
         const igre = [item.ingredients1,item.ingredients2,item.ingredients3,item.ingredients4,item.ingredients5,item.ingredients6]
-        console.log(igre)
+        
 
         if(item){
         res.render("detail",{igre,reci});   
@@ -94,7 +95,7 @@ Router.get("/:id", async (req: Request, res: Response) => {
     }
     });
 
-
+//Open edit recipe and ingredients form
 Router.get("/edit/(:id)" ,async (req :Request,res: Response)=>{
     const id: any = parseInt(req.params.id, 10);
     const recip = await recipeRepository.findOneBy({
@@ -104,11 +105,9 @@ Router.get("/edit/(:id)" ,async (req :Request,res: Response)=>{
     const ingre = await ingreRepository.findOneBy({
         id_recip: recip
     })
-    console.log(ingre)
-
     res.render("editRecipe",{recip,ingre})
 })
-
+//Edit recipe and ingredients
 Router.post("/update/:id",async (req :Request,res: Response) =>{
     const id : any = parseInt(req.params.id,10);
     const item = req.body
@@ -134,10 +133,39 @@ Router.post("/update/:id",async (req :Request,res: Response) =>{
     ingreUpdate.ingredients5 = item.ingredient5
     ingreUpdate.ingredients6 = item.ingredient6
     ingreUpdate.id_recip = recipeUpdate
- 
+
     ingreRepository.save(ingreUpdate)
-    
+
 
     const items = await recipeRepository.find() 
     res.redirect("/")
+
 });
+
+
+//Delete  recipe
+Router.delete("/(:id)" , async (req :Request,res: Response)=>{
+    const id:number = parseInt(req.params.id,10)
+    const recipe = await recipeRepository.findOneBy({
+        id:id
+    })
+    const ingre = await ingreRepository.findOneBy({
+        id_recip : recipe
+    })
+    await ingreRepository.remove(ingre)
+    await recipeRepository.remove(recipe)
+    res.redirect("/")
+})
+
+//searching recipe
+// Router.post("/search",async (req :Request,res:Response)=>
+// {
+//     const name = req.body.search
+    
+//     const items =await recipeRepository.findBy({
+//         title: Like('%'+name+'%') 
+//     })
+
+//     res.render("index",{items})
+
+// })

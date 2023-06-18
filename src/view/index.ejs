@@ -20,13 +20,15 @@
     <div class="container">
       <header class="header">
         <img src="/img/logo.png" alt="Logo" class="header__logo" />
-        <form class="search">
+
+        <form class="search" action="/search" method="post">
           <input
+            name="search"
             type="text"
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
           />
-          <button class="btn search__btn">
+          <button class="btn search__btn" >
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
             </svg>
@@ -52,7 +54,7 @@
         <ul class="results">
           <% for(let item of items) {%>
           <li class="preview">
-            <a class="preview__link preview__link" href="http://localhost:7000/<%= item.id %>">
+            <a class="preview__link preview__link" href="/<%= item.id %>">
               <div class="preview__fig">
                 <img src="<%= item.imageUrl %>" alt="Test" />
               </div>
