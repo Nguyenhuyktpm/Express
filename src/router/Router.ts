@@ -62,6 +62,10 @@ Router.get("/:id", async (req: Request, res: Response) => {
         {
             res.render("addRecipe")
         }
+        else if(req.params.id=="login")
+        {
+            res.render("login")
+        }
     }
         catch (e:any) {
         res.status(500).send(e.message);
