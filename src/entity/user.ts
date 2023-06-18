@@ -1,6 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn} from "typeorm"
 
-export class Recipes {
+
+@Entity()
+export class user {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -9,7 +11,19 @@ export class Recipes {
     })
     name: string
 
+    @Column({
+        length: 100,
+    })
+    email: string
+    
+    @Column({
+        length: 100,
+    })
+    password: string
 
-
+    @Column({
+        length: 10,
+    })
+    role: string
     
 }

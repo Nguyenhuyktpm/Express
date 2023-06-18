@@ -80,7 +80,6 @@ Router.get("/:id", async (req: Request, res: Response) => {
         {
             res.render("addRecipe")
         }
-
     }
         catch (e:any) {
         res.status(500).send(e.message);
