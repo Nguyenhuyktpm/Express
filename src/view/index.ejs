@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
       rel="stylesheet"
@@ -52,16 +55,23 @@
         <ul class="results">
           <% for(let item of items) {%>
           <li class="preview">
-            <a
-              class="preview__link preview__link"
-              href="http://localhost:7000/<%= item.id %>"
-            >
+            <a class="preview__link preview__link" href="/<%= item.id %>">
               <div class="preview__fig">
                 <img src="<%= item.imageUrl %>" alt="Test" />
               </div>
               <div class="preview__data">
-                <h4 class="preview__title"><%= item.title %></h4>
-                <p class="preview__publisher"><%= item.publisher %></p>
+                <div class="">
+                  <h4 class="preview__title"><%= item.title %></h4>
+                  <p class="preview__publisher"><%= item.publisher %></p>
+                </div>
+                <div class="button--function">
+                  <a href="">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  <a href="">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
               </div>
             </a>
           </li>
@@ -69,7 +79,9 @@
         </ul>
         <div class="pagination">
           <% for (let page = 1; page <= pageCount; page++) { %>
-          <a href="?page=<%= page %>"><%= page %></a>
+          <a class="btn--inline pagination__btn--prev" href="?page=<%= page %>">
+            <span><%= page %></span>
+          </a>
           <% } %>
         </div>
       </div>
@@ -82,7 +94,7 @@
             <ul class="footer-socials">
               <li>
                 <a href="#" target="_blank"
-                  ><i class="bi bi-facebook"></i><span>Facebook</span></a
+                  ><i class="bi"></i><span>Facebook</span></a
                 >
               </li>
               <li>
@@ -160,4 +172,5 @@
       </footer>
     </div>
   </body>
+  <script src="js/index.js"></script>
 </html>
