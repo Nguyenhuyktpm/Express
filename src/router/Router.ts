@@ -38,7 +38,7 @@ Router.post("/", async (req: Request, res: Response) => {
         recipes.publisher=item.publisher
         recipes.timetocook=item.cookingTime
         recipes.publisherUrl=item.PublisherURL
-        await recipeRepository.create(recipes)
+        
         
         //inre
         const ingredient = new Ingredients()
@@ -49,10 +49,13 @@ Router.post("/", async (req: Request, res: Response) => {
         ingredient.ingredients5 = item.ingredient5
         ingredient.ingredients6 = item.ingredient6
         ingredient.id_recip = recipes
-        await ingreRepository.create(ingredient)
+
+        await recipeRepository.save(recipes)
+        await ingreRepository.save(ingredient)
+
 
         const items = await recipeRepository.find() 
-        
+
         res.render("index",{items})
     } catch (e:any) {
         res.status(500).send(e.message);
@@ -65,17 +68,22 @@ Router.get("/:id", async (req: Request, res: Response) => {
     try {
         if(!isNaN(id))
         {
-        const item = await ingreRepository.findOneBy({
-           id_recip:id
-        });
-        const reci = await recipeRepository.findOneBy({
-            id:id
+            const reci = await recipeRepository.findOneBy({
+                id:id
         })
+        const item = await ingreRepository.findOneBy({
+           id_recip:reci
+        });
+        
         const igre = [item.ingredients1,item.ingredients2,item.ingredients3,item.ingredients4,item.ingredients5,item.ingredients6]
+        console.log(igre)
+
         if(item){
         res.render("detail",{igre,reci});   
         }
+
         }
+
         else if(req.params.id=="add")
         {
             res.render("addRecipe")
@@ -94,26 +102,42 @@ Router.get("/edit/(:id)" ,async (req :Request,res: Response)=>{
     })
 
     const ingre = await ingreRepository.findOneBy({
-        id_recip: id
+        id_recip: recip
     })
     console.log(ingre)
 
     res.render("editRecipe",{recip,ingre})
 })
 
-Router.post("/edit/:id",async (req :Request,res: Response) =>{
+Router.post("/update/:id",async (req :Request,res: Response) =>{
     const id : any = parseInt(req.params.id,10);
-    const recipeUpdate = req.body;
-    const ingreUpdate = req.body;
-    const ingreexist = ingreRepository.findOneBy({
-        id_recip:id
-    })
-    const exist = recipeRepository.findOneBy({
-        id:id 
-    })
-    if(exist){
-        await recipeRepository.update(id,recipeUpdate);
-        
-    }
+    const item = req.body
+    const recipeUpdate =await recipeRepository.findOneBy({
+        id : id
+    });
+    const ingreUpdate =await ingreRepository.findOneBy({
+        id_recip:recipeUpdate
+    });
+    
+    //
+    recipeUpdate.title = item.title
+    recipeUpdate.imageUrl= item.image
+    recipeUpdate.publisher=item.publisher
+    recipeUpdate.publisherUrl =item.PublisherURL
+    recipeUpdate.timetocook = item.cookingTime
+    recipeRepository.save(recipeUpdate)
+    //
+    ingreUpdate.ingredients1 = item.ingredient1
+    ingreUpdate.ingredients2 = item.ingredient2
+    ingreUpdate.ingredients3 = item.ingredient3
+    ingreUpdate.ingredients4 = item.ingredient4
+    ingreUpdate.ingredients5 = item.ingredient5
+    ingreUpdate.ingredients6 = item.ingredient6
+    ingreUpdate.id_recip = recipeUpdate
+ 
+    ingreRepository.save(ingreUpdate)
+    
 
+    const items = await recipeRepository.find() 
+    res.redirect("/")
 });
