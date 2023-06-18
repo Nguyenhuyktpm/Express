@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne} from "typeorm"
 import { Recipes } from "./Recipes"
 @Entity()
-export class ingredients {
+export class Ingredients {
     @PrimaryGeneratedColumn()
     id: number
 

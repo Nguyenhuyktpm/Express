@@ -16,7 +16,10 @@
 
     <title>forkify // Search over 1,000,000 recipes</title>
   </head>
+
+ 
   <body>
+    
     <div class="container">
       <header class="header">
         <img src="/img/logo.png" alt="Logo" class="header__logo" />
@@ -47,28 +50,25 @@
           </ul>
         </nav>
       </header>
-        <form class="upload" action="http://localhost:7000/" method="post">
+        <form class="upload" action="http://localhost:7000/<%= recip.id %>" method="post">
           <div class="upload__column">
             <h3 class="upload__heading">Recipe data</h3>
             <label>Title</label>
-            <input value="TEST122" required name="title" type="text" />
+            <input value="<%= recip.title %>" required name="title" type="text" />
             <label>PublisherURL</label>
-            <input value="TEST122" required name="PublisherURL" type="text" />
+            <input value="<%= recip.publisherUrl %>" required name="PublisherURL" type="text" />
             <label>Image URL</label>
-            <input value="TEST122" required name="image" type="text" />
+            <input value="<%= recip.imageUrl %>" required name="image" type="text" />
             <label>Publisher</label>
-            <input value="TEST122" required name="publisher" type="text" />
+            <input value="<%= recip.publisher %>" required name="publisher" type="text" />
             <label>Prep time</label>
-            <input value="23" required name="cookingTime" type="number" />
-            <label>Servings</label>
-            <input value="23" required name="servings" type="number" />
+            <input value="<%= recip.timetocook %>" required name="cookingTime" type="number" />
           </div>
-  
           <div class="upload__column">
             <h3 class="upload__heading">Ingredients</h3>
             <label>Ingredient 1</label>
             <input
-              value="0.5,kg,Rice"
+              value="<%= ingre.ingredients1 %>"
               type="text"
               required
               name="ingredient1"
@@ -76,39 +76,42 @@
             />
             <label>Ingredient 2</label>
             <input
-              value="1,,Avocado"
+              value="<%= ingre.ingredients2 %>"
               type="text"
               name="ingredient2"
               placeholder="Format: 'Quantity,Unit,Description'"
             />
             <label>Ingredient 3</label>
             <input
-              value=",,salt"
+              value="<%= ingre.ingredients3 %>"
               type="text"
               name="ingredient3"
               placeholder="Format: 'Quantity,Unit,Description'"
             />
             <label>Ingredient 4</label>
             <input
+              value="<%= ingre.ingredients4 %>"
               type="text"
               name="ingredient4"
               placeholder="Format: 'Quantity,Unit,Description'"
             />
             <label>Ingredient 5</label>
             <input
+              value="<%= ingre.ingredients5 %>"
               type="text"
               name="ingredient5"
               placeholder="Format: 'Quantity,Unit,Description'"
             />
             <label>Ingredient 6</label>
             <input
+              value="<%= ingre.ingredients6 %>"
               type="text"
               name="ingredient6"
               placeholder="Format: 'Quantity,Unit,Description'"
             />
           </div>
   
-          <button class="btn upload__btn">
+          <button type="submit" class="btn upload__btn">
             <span>Upload</span>
           </button>
         </form>

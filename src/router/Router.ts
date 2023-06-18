@@ -1,13 +1,13 @@
 import express, { Request, Response, response } from "express";
 import { AppDataSource } from "../data-source";
 import { Recipes } from "../entity/Recipes";
-import { ingredients } from "../entity/Ingredients";
+import { Ingredients } from "../entity/Ingredients";
 import { request } from "http";
 
 export const Router = express.Router();
 
 const recipeRepository = AppDataSource.getRepository(Recipes)
-const ingreRepository = AppDataSource.getRepository(ingredients)
+const ingreRepository = AppDataSource.getRepository(Ingredients)
 
 AppDataSource.initialize()
     .then(() => {
@@ -27,15 +27,33 @@ Router.get("/", async (req: Request, res: Response) => {
     });
 
 
-Router.post("/add", async (req: Request, res: Response) => {
+Router.post("/", async (req: Request, res: Response) => {
     try {
+       
         const item = req.body
-        const info = [item.title,item.publisher,item.sourceURL,item.image,item.cookingTime]
-        const ingre =[item.ingredient1,item.ingredient2,item.ingredient3,item.ingredient4,item.ingredient5,item.ingredient6]
-        await recipeRepository.save(info);
-        await ingreRepository.save(ingre);
-        return res.render("index")
+        //recipe
+        const recipes = new Recipes()
+        recipes.title = item.title
+        recipes.imageUrl=item.image
+        recipes.publisher=item.publisher
+        recipes.timetocook=item.cookingTime
+        recipes.publisherUrl=item.PublisherURL
+        await recipeRepository.create(recipes)
         
+        //inre
+        const ingredient = new Ingredients()
+        ingredient.ingredients1 = item.ingredient1
+        ingredient.ingredients2 = item.ingredient2
+        ingredient.ingredients3 = item.ingredient3
+        ingredient.ingredients4 = item.ingredient4
+        ingredient.ingredients5 = item.ingredient5
+        ingredient.ingredients6 = item.ingredient6
+        ingredient.id_recip = recipes
+        await ingreRepository.create(ingredient)
+
+        const items = await recipeRepository.find() 
+        
+        res.render("index",{items})
     } catch (e:any) {
         res.status(500).send(e.message);
     }
@@ -62,13 +80,29 @@ Router.get("/:id", async (req: Request, res: Response) => {
         {
             res.render("addRecipe")
         }
+
     }
         catch (e:any) {
         res.status(500).send(e.message);
     }
     });
 
-Router.post("/:id",async (req :Request,res: Response) =>{
+
+Router.get("/edit/(:id)" ,async (req :Request,res: Response)=>{
+    const id: any = parseInt(req.params.id, 10);
+    const recip = await recipeRepository.findOneBy({
+        id: id
+    })
+
+    const ingre = await ingreRepository.findOneBy({
+        id_recip: id
+    })
+    console.log(ingre)
+
+    res.render("editRecipe",{recip,ingre})
+})
+
+Router.post("/edit/:id",async (req :Request,res: Response) =>{
     const id : any = parseInt(req.params.id,10);
     const recipeUpdate = req.body;
     const ingreUpdate = req.body;
@@ -76,11 +110,11 @@ Router.post("/:id",async (req :Request,res: Response) =>{
         id_recip:id
     })
     const exist = recipeRepository.findOneBy({
-        id:id
+        id:id 
     })
     if(exist){
         await recipeRepository.update(id,recipeUpdate);
-        await ingreRepository.update((await ingreexist).id,ingreUpdate);
+        
     }
 
 });

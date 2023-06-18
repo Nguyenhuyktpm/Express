@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm"
-import { ingredients } from "./Ingredients"
+import { Ingredients } from "./Ingredients"
 
 
 @Entity()
