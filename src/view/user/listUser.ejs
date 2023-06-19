@@ -15,6 +15,8 @@
     <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon" />
 
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+
     <!-- <script type="module" defer src="/js/controller.js"></script> -->
 
     <title>forkify // Search over 1,000,000 recipes</title>
@@ -130,26 +132,31 @@
         </nav>
       </header>
 
-      <div class="search-results">
-        <ul class="results">
-          <% for(let item of items) {%>
-          <li class="preview">
-            <a class="preview__link preview__link" href="/<%= item.id %>">
-              <div class="preview__fig">
-                <img src="<%= item.imageUrl %>" alt="Test" />
-              </div>
-              <div class="preview__data">
-                <div class="">
-                  <h4 class="preview__title"><%= item.title %></h4>
-                  <p class="preview__publisher"><%= item.publisher %></p>
-                </div>
-                <% if(role ==="admin"){%>
+      <div class="bd-example" style="grid-column: 1/3; padding: 1rem">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Tên Đăng nhập</th>
+              <th scope="col">Role</th>
+              <th scope="col">Họ và tên</th>
+              <th scope="col">PhoneNumber</th>
+              <th scope="col">Email</th>
+              <th scope="col">Chức năng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% arrayUser.forEach((item,index) =>{%>
+            <tr>
+              <th scope="row"><%= index+1 %></th>
+              <td><%= item[0].username %></td>
+              <td><%= item[0].role %></td>
+              <td><%= item[1].name %></td>
+              <td><%= item[1].phoneNumber %></td>
+              <td><%= item[1].email %></td>
+              <td>
                 <div class="button--function">
-                  <a href="/edit/<%= item.id %>">
-                    <i class="bi bi-pencil-square"></i>
-                  </a>
-
-                  <form action="delete/<%= item.id %>" method="post">
+                  <form action="" method="post">
                     <button
                       type="submit"
                       style="
@@ -164,19 +171,11 @@
                     </button>
                   </form>
                 </div>
-                <% }%>
-              </div>
-            </a>
-          </li>
-          <% } %>
-        </ul>
-        <div class="pagination">
-          <% for (let page = 1; page <= pageCount; page++) { %>
-          <a class="btn--inline pagination__btn--prev" href="?page=<%= page %>">
-            <span><%= page %></span>
-          </a>
-          <% } %>
-        </div>
+              </td>
+            </tr>
+            <% })%>
+          </tbody>
+        </table>
       </div>
       <footer
         id="footer-section"

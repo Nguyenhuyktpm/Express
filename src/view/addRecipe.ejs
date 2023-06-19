@@ -33,6 +33,7 @@
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
           />
+
           <button class="btn search__btn">
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
@@ -44,12 +45,86 @@
         <nav class="nav">
           <ul class="nav__list">
             <li class="nav__item">
+              <% if(role ==="admin"){%>
               <button class="nav__btn nav__btn--add-recipe">
                 <svg class="nav__icon">
                   <use href="/img/icons.svg#icon-edit"></use>
                 </svg>
                 <span>Add recipe</span>
               </button>
+              <% }%>
+            </li>
+            <!-- <li class="nav__item">
+              <button class="nav__btn nav__btn--bookmarks">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-bookmark"></use>
+                </svg>
+                <span>Bookmarks</span>
+              </button>
+              <div class="bookmarks">
+                <ul class="bookmarks__list">
+                  <li class="preview">
+                    <a class="preview__link" href="#5ed6604591c37cdc054bcd43">
+                      <figure class="preview__fig">
+                        <img
+                          src="http://forkify-api.herokuapp.com/images/eggsaladsandwich9908.jpg"
+                          alt="Egg Salad Sandwich (the only one I"
+                        />
+                      </figure>
+                      <div class="preview__data">
+                        <h4 class="preview__title">
+                          Egg Salad Sandwich (the only one I
+                        </h4>
+                        <p class="preview__publisher">101 Cookbooks</p>
+                        <div class="preview__user-generated hidden">
+                          <svg>
+                            <use href=""></use>
+                          </svg>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li> -->
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--bookmarks">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-users"></use>
+                </svg>
+                <span><%= nameUser %></span>
+              </button>
+              <div class="bookmarks" style="width: 18rem">
+                <ul class="bookmarks__list">
+                  <% if(role ==="admin"){%>
+
+                  <li class="preview box-">
+                    <a href="/user" class="preview__link box-user-item">
+                      <p>Danh sách tài khoản</p>
+                    </a>
+                  </li>
+                  <% }else{ %>
+                  <li class="preview box-">
+                    <a
+                      href="/changePassword"
+                      class="preview__link box-user-item"
+                    >
+                      <p>Đổi mật khẩu</p>
+                    </a>
+                  </li>
+                  <li class="preview">
+                    <a href="/editUser" class="preview__link box-user-item">
+                      <p>Sửa thông tin tài khoản</p>
+                    </a>
+                  </li>
+                  <% }%>
+                  <li class="preview">
+                    <a href="/login" class="preview__link box-user-item">
+                      <p>Đăng xuất</p></a
+                    >
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
         </nav>

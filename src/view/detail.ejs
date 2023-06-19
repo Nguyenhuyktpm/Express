@@ -33,6 +33,7 @@
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
           />
+
           <button class="btn search__btn">
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
@@ -45,18 +46,89 @@
           <ul class="nav__list">
             <li class="nav__item">
               <% if(role ==="admin"){%>
-                <button class="nav__btn nav__btn--add-recipe">
-                  <svg class="nav__icon">
-                    <use href="/img/icons.svg#icon-edit"></use>
-                  </svg>
-                  <span>Add recipe</span>
-                </button>
-                <% }%>
+              <button class="nav__btn nav__btn--add-recipe">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-edit"></use>
+                </svg>
+                <span>Add recipe</span>
+              </button>
+              <% }%>
+            </li>
+            <!-- <li class="nav__item">
+              <button class="nav__btn nav__btn--bookmarks">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-bookmark"></use>
+                </svg>
+                <span>Bookmarks</span>
+              </button>
+              <div class="bookmarks">
+                <ul class="bookmarks__list">
+                  <li class="preview">
+                    <a class="preview__link" href="#5ed6604591c37cdc054bcd43">
+                      <figure class="preview__fig">
+                        <img
+                          src="http://forkify-api.herokuapp.com/images/eggsaladsandwich9908.jpg"
+                          alt="Egg Salad Sandwich (the only one I"
+                        />
+                      </figure>
+                      <div class="preview__data">
+                        <h4 class="preview__title">
+                          Egg Salad Sandwich (the only one I
+                        </h4>
+                        <p class="preview__publisher">101 Cookbooks</p>
+                        <div class="preview__user-generated hidden">
+                          <svg>
+                            <use href=""></use>
+                          </svg>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li> -->
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--bookmarks">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-users"></use>
+                </svg>
+                <span><%= nameUser %></span>
+              </button>
+              <div class="bookmarks" style="width: 18rem">
+                <ul class="bookmarks__list">
+                  <% if(role ==="admin"){%>
+
+                  <li class="preview box-">
+                    <a href="/user" class="preview__link box-user-item">
+                      <p>Danh sách tài khoản</p>
+                    </a>
+                  </li>
+                  <% }else{ %>
+                  <li class="preview box-">
+                    <a
+                      href="/changePassword"
+                      class="preview__link box-user-item"
+                    >
+                      <p>Đổi mật khẩu</p>
+                    </a>
+                  </li>
+                  <li class="preview">
+                    <a href="/editUser" class="preview__link box-user-item">
+                      <p>Sửa thông tin tài khoản</p>
+                    </a>
+                  </li>
+                  <% }%>
+                  <li class="preview">
+                    <a href="/login" class="preview__link box-user-item">
+                      <p>Đăng xuất</p></a
+                    >
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
         </nav>
       </header>
-
       <div class="recipe">
         <figure class="recipe__fig">
          
@@ -138,6 +210,93 @@
        
 
     </div>
+      <footer
+        id="footer-section"
+        class="penci-footer-social-media penci-lazy footer-social-remove-circle"
+      >
+        <div class="container-footer">
+          <div class="footer-socials-section">
+            <ul class="footer-socials">
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi"></i><span>Facebook</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-twitter"></i><span>Twitter</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-google-plus"></i><span>Google +</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-instagram"></i><span>Instagram</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-pinterest"></i><span>Pinterest</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-tumblr"></i><span>Tumblr</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-youtube-play"></i><span>Youtube</span></a
+                >
+              </li>
+              <li>
+                <a href="mailto:phanngocanh11@gmail.com"
+                  ><i class="fa fa-envelope-o"></i><span>Email</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-snapchat-ghost"></i><span>Snapchat</span></a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-logo-copyright footer-not-logo footer-not-gotop">
+            <div class="footer-menu-wrap">
+              <ul id="menu-footer-menu" class="footer-menu">
+                <li
+                  id="menu-item-1175"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1175"
+                >
+                  <a href="https://www.esheepkitchen.com/home/">Home</a>
+                </li>
+                <li
+                  id="menu-item-1174"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1174"
+                >
+                  <a href="https://www.esheepkitchen.com/about-me/">About me</a>
+                </li>
+                <li
+                  id="menu-item-1176"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1176"
+                >
+                  <a href="https://www.esheepkitchen.com/cookbooks/"
+                    >Cookbooks</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="penci-go-to-top-floating show-up">
+            <i class="fa fa-angle-up"></i>
+          </div>
+        </div>
+      </footer>
+    </div>
+     
       <footer
         id="footer-section"
         class="penci-footer-social-media penci-lazy footer-social-remove-circle"

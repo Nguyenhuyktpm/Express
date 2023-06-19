@@ -19,7 +19,10 @@ const sessionOptions: SessionOptions = {
   secret: "your-secret-key", // Thay thế bằng một khóa bảo mật bất kỳ
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 60000 }, // Thời gian sống session là 60 giây (đơn vị tính bằng mili giây)
+  cookie: {
+    secure: false,
+    maxAge: 60000,
+  }, // Thời gian sống session là 60 giây (đơn vị tính bằng mili giây)
 };
 const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
@@ -57,7 +60,6 @@ Router.use((req: Request, res: Response, next) => {
 
 Router.post("/login", async (req: Request, res: Response) => {
   const { username: username, password } = req.body;
-  req.session.loggedIn = false;
   try {
     const user = await userRepository.findOne({ where: { username } });
     if (!user) {
@@ -75,9 +77,15 @@ Router.post("/login", async (req: Request, res: Response) => {
       if (!req.session.lastActiveTime) {
         req.session.lastActiveTime = new Date().getTime();
       }
+      console.log(user);
+      const infoUser = await userInfoRepository.findOneBy({
+        user: user,
+      });
       // Thực hiện các thao tác với session
       req.session.loggedIn = true; // Đặt trạng thái đăng nhập thành true trong session
       req.session.user = {
+        idUser: user.id,
+        idInfoUser: infoUser.id,
         username,
         role: user.role,
       };
@@ -103,7 +111,9 @@ Router.get("/", async (req: Request, res: Response) => {
       const recipeList = items.slice(startIndex, endIndex);
       console.log(req.session.user);
       const role = req.session.user.role;
+      const nameUser = req.session.user.username;
       res.render("index", {
+        nameUser,
         role,
         items: recipeList,
         pageCount,
@@ -121,7 +131,6 @@ Router.get("/", async (req: Request, res: Response) => {
 Router.post("/register", async (req: Request, res: Response) => {
   try {
     const infoUser1 = req.body;
-    console.log(infoUser);
     // Mã hóa mật khẩu
     const saltRounds = 10;
     const passwordHass = bcrypt.hashSync(infoUser1.password, saltRounds);
@@ -136,20 +145,105 @@ Router.post("/register", async (req: Request, res: Response) => {
     detailUser.email = infoUser1.email;
     detailUser.user = users;
     await userInfoRepository.save(detailUser);
-    console.log(users);
     res.redirect("/login");
   } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
+//User**********************************/
+Router.get("/user", async (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    const user = await userRepository.find();
+    const userInfo = await userInfoRepository.find();
+    const role = req.session.user.role;
+    const nameUser = req.session.user.username;
+    const arrayUser = user.map((item, index) => {
+      return [user[index], userInfo[index]];
+    });
+    res.render("user/listUser", { arrayUser, role, nameUser });
+  } else {
+    res.redirect("/login");
+  }
+});
+Router.get("/editUser", async (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    const role = req.session.user.role;
+    const nameUser = req.session.user.username;
+    const infoUser = await userInfoRepository.findOneBy({
+      id: req.session.user.idInfoUser,
+    });
+    console.log(infoUser.email);
+    res.render("user/editInfoUser", { role, nameUser, infoUser });
+  } else {
+    res.redirect("/login");
+  }
+});
+Router.post("/updateUser", async (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    const item = req.body;
+    const infoUser = await userInfoRepository.findOneBy({
+      id: req.session.user.idInfoUser,
+    });
+    infoUser.name = item.name;
+    infoUser.phoneNumber = item.phoneNumber;
+    infoUser.email = item.email;
+    userInfoRepository.save(infoUser);
+    res.redirect("/");
+  } else {
+    res.redirect("/login");
+  }
+});
+//changePassword
+Router.get("/changePassword", async (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    const role = req.session.user.role;
+    const nameUser = req.session.user.username;
+    res.render("user/changePassword", { role, nameUser });
+  } else {
+    res.redirect("/login");
+  }
+});
+Router.post("/updatePassword", async (req: Request, res: Response) => {
+  if (req.session.loggedIn) {
+    const item = req.body;
+    const user = await userRepository.findOneBy({
+      id: req.session.user.idUser,
+    });
+    const passwordMatch = await bcrypt.compare(
+      item.currentPassword,
+      user.password
+    );
+    if (item.newPassword != item.confirmPassword) {
+      res.render("/changePassword", {
+        error: "vui lòng nhập lại đúng mật khẩu mới",
+      });
+      return;
+    }
+    if (!passwordMatch) {
+      res.render("/changePassword", { error: "Mật khẩu không chính xác" });
+      return;
+    }
+    const saltRounds = 10;
+    const passwordHass = bcrypt.hashSync(item.newPassword, saltRounds);
+    user.password = passwordHass;
+    userRepository.save(user);
+    res.redirect("/");
+  } else {
+    res.redirect("/login");
+  }
+});
+//*************************************** */
 Router.get("/add", async (req: Request, res: Response) => {
   if (req.session.loggedIn) {
-    res.render("addRecipe");
+    const role = req.session.user.role;
+    const nameUser = req.session.user.username;
+    res.render("addRecipe", { role, nameUser });
   } else {
     res.redirect("/login");
   }
 });
 Router.get("/login", async (req: Request, res: Response) => {
+  req.session.loggedIn = false;
   res.render("login");
 });
 Router.get("/register", async (req: Request, res: Response) => {
@@ -194,6 +288,8 @@ Router.get("/:id", async (req: Request, res: Response) => {
   const id: any = parseInt(req.params.id, 10);
   try {
     if (req.session.loggedIn) {
+      const role = req.session.user.role;
+      const nameUser = req.session.user.username;
       if (!isNaN(id)) {
         const reci = await recipeRepository.findOneBy({
           id: id,
@@ -210,10 +306,8 @@ Router.get("/:id", async (req: Request, res: Response) => {
           item.ingredients5,
           item.ingredients6,
         ];
-        console.log(igre);
-        const role = req.session.user.role;
         if (item) {
-          res.render("detail", { role, igre, reci });
+          res.render("detail", { role, igre, reci, nameUser });
         }
       }
     } else {
@@ -226,6 +320,8 @@ Router.get("/:id", async (req: Request, res: Response) => {
 
 Router.get("/edit/(:id)", async (req: Request, res: Response) => {
   if (req.session.loggedIn) {
+    const role = req.session.user.role;
+    const nameUser = req.session.user.username;
     const id: any = parseInt(req.params.id, 10);
     const recip = await recipeRepository.findOneBy({
       id: id,
@@ -234,9 +330,7 @@ Router.get("/edit/(:id)", async (req: Request, res: Response) => {
     const ingre = await ingreRepository.findOneBy({
       id_recip: recip,
     });
-    console.log(ingre);
-
-    res.render("editRecipe", { recip, ingre });
+    res.render("editRecipe", { recip, ingre, role, nameUser });
   } else {
     res.redirect("/login");
   }
@@ -270,8 +364,6 @@ Router.post("/update/:id", async (req: Request, res: Response) => {
     ingreUpdate.id_recip = recipeUpdate;
 
     ingreRepository.save(ingreUpdate);
-
-    const items = await recipeRepository.find();
     res.redirect("/");
   } else {
     res.redirect("/login");
@@ -314,8 +406,10 @@ Router.post("/search", async (req: Request, res: Response) => {
     const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
     const recipeList = items.slice(startIndex, endIndex);
     const role = req.session.user.role;
+    const nameUser = req.session.user.username;
     res.render("index", {
       role,
+      nameUser,
       items: recipeList,
       pageCount,
       itemCount,
@@ -324,9 +418,4 @@ Router.post("/search", async (req: Request, res: Response) => {
   } else {
     res.redirect("/login");
   }
-});
-Router.get("/user", async (req: Request, res: Response) => {
-  const user = await userRepository.find();
-  const userInfo = await userInfoRepository.find();
-  res.render("listUser", { user, userInfo });
 });

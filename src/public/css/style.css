@@ -798,3 +798,15 @@ ul.footer-socials li a span {
 .button--function a i {
   color: #f38e82;
 }
+.box-user-item {
+  display: flex;
+  height: 5rem;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 1.4rem;
+}
+td,
+th {
+  font-size: 2rem;
+}
