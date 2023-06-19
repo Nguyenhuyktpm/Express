@@ -7,9 +7,9 @@ import bodyParser from "body-parser";
 import paginate from "express-paginate";
 import { Like } from "typeorm";
 import bcrypt from "bcrypt";
-import { user } from "../entity/user";
-import session,{SessionOptions } from "express-session";
+import { User } from "../entity/user";
 import { userInfo } from "os";
+import session, { SessionOptions } from "express-session";
 import { infoUser } from "../entity/infoUser";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
@@ -21,9 +21,9 @@ const sessionOptions: SessionOptions = {
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 60000 }, // Thời gian sống session là 60 giây (đơn vị tính bằng mili giây)
 };
-const recipeRepository = AppDataSource.getRepository(Recipes);
+export const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
-const userRepository = AppDataSource.getRepository(user);
+export const userRepository = AppDataSource.getRepository(User);
 const userInfoRepository = AppDataSource.getRepository(infoUser)
 
 AppDataSource.initialize()
@@ -79,6 +79,7 @@ Router.post("/login", async (req: Request, res: Response) => {
       req.session.loggedIn = true; // Đặt trạng thái đăng nhập thành true trong session
       req.session.user = {
         username,
+        id_user:user.id,
         role: user.role,
       };
     }
@@ -93,7 +94,7 @@ Router.post("/login", async (req: Request, res: Response) => {
 Router.get("/", async (req: Request, res: Response) => {
   try {
     if (req.session.loggedIn) {
-      
+      // const items: Item[] = await ItemService.findAll();
       const items = await recipeRepository.find();
       const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
       const itemCount: number = items.length; // Tổng số công thức
@@ -102,7 +103,7 @@ Router.get("/", async (req: Request, res: Response) => {
       const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
       const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
       const recipeList = items.slice(startIndex, endIndex);
-      console.log(req.session.user);
+      
       res.render("index", {
         items: recipeList,
         pageCount,
@@ -120,11 +121,11 @@ Router.get("/", async (req: Request, res: Response) => {
 Router.post("/register", async (req: Request, res: Response) => {
   try {
     const infoUser1 = req.body;
-    console.log(infoUser);
+    
     // Mã hóa mật khẩu
     const saltRounds = 10;
     const passwordHass = bcrypt.hashSync(infoUser1.password, saltRounds);
-    const users = new user();
+    const users = new User();
     users.username = infoUser1.username;
     users.password = passwordHass;
     users.role = "member";
@@ -135,7 +136,7 @@ Router.post("/register", async (req: Request, res: Response) => {
     detailUser.email = infoUser1.email;
     detailUser.user = users;
     await userInfoRepository.save(detailUser);
-    console.log(users);
+    
     res.redirect("/login");
   } catch (e: any) {
     res.status(500).send(e.message);
@@ -209,7 +210,7 @@ Router.get("/:id", async (req: Request, res: Response) => {
           item.ingredients5,
           item.ingredients6,
         ];
-        console.log(igre);
+        
 
         if (item) {
           res.render("detail", { igre, reci });
@@ -233,7 +234,7 @@ Router.get("/edit/(:id)", async (req: Request, res: Response) => {
     const ingre = await ingreRepository.findOneBy({
       id_recip: recip,
     });
-    console.log(ingre);
+   
 
     res.render("editRecipe", { recip, ingre });
   } else {
@@ -300,3 +301,35 @@ Router.get("/user",async(req:Request ,res: Response)=>{
     const userInfo = await userInfoRepository.find();
     res.render("listUser",{user,userInfo})
 })
+// searching recipe
+Router.post("/search", async (req: Request, res: Response) => {
+  const name = req.body.search;
+
+  const items = await recipeRepository.findBy({
+    title: Like("%" + name + "%"),
+  });
+
+  try {
+    // const items: Item[] = await ItemService.findAll();
+  
+    const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
+    const itemCount: number = items.length; // Tổng số công thức
+    const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
+    const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
+    const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
+    const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
+    const recipeList = items.slice(startIndex, endIndex);
+    res.render("index", {
+      items: recipeList,
+      pageCount,
+      itemCount,
+      pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
+    });
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+
+});
+
+
+

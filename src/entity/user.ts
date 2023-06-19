@@ -1,17 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
+import { Recipes } from "./Recipes";
 
 @Entity()
-export class user {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-<<<<<<< HEAD
     @Column({ unique: true ,length:100})
     username: string
-=======
-  @Column({ unique: true, length: 100 })
-  username: string;
->>>>>>> 862c50318094256f1b62728e48a6284f51e980b4
 
   @Column({
     length: 100,
@@ -22,4 +18,9 @@ export class user {
     length: 10,
   })
   role: string;
+
+  
+  @ManyToMany(() => Recipes, (recipe) => recipe.users)
+  @JoinTable()
+  recipes: Recipes[]
 }
