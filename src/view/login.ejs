@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -11,155 +11,166 @@
     />
     <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
-        integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+      integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/login.css" />
-    
+
     <title>Log In</title>
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <img src="/img/logo.png" alt="Logo" class="header__logo" />
-      <form class="search">
-        <input
-          type="text"
-          class="search__field"
-          placeholder="Search over 1,000,000 recipes..."
-        />
-        <button class="btn search__btn">
-          <svg class="search__icon">
-            <use href="/img/icons.svg#icon-search"></use>
-          </svg>
-          <span>Search</span>
-        </button>
-      </form>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <img src="/img/logo.png" alt="Logo" class="header__logo" />
+        <form class="search">
+          <input
+            type="text"
+            class="search__field"
+            placeholder="Search over 1,000,000 recipes..."
+          />
+          <button class="btn search__btn">
+            <svg class="search__icon">
+              <use href="/img/icons.svg#icon-search"></use>
+            </svg>
+            <span>Search</span>
+          </button>
+        </form>
 
-      <nav class="nav">
-        <ul class="nav__list">
-          <li class="nav__item">
-            <button class="nav__btn nav__btn--add-recipe">
-              <svg class="nav__icon">
-                <use href="/img/icons.svg#icon-edit"></use>
-              </svg>
-              <span>Add recipe</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </header>
-
-    
-
-    <div id="wrapper" >
-        
-      <div id="form-login">
-          <h1 class="form-heading">Log In </h1>
-          <div class="form-group">
-              <i class="far fa-user"></i>
-              <input type="text" class="form-input"  placeholder="Your Name" id="userName">
-    
-          </div>
-          <div class="form-group">
-              <i class="fas fa-key"></i>
-              <input type="password" class="form-input"  placeholder="Password" id="passWord">
-          </div>
-          <span class="form-message" id="not_found_account"></span>
-          <span class="form-message" id="text_when_empty"></span>
-          <a class="submit-btn" href="#"><button class="form-submit">Sign In</button></a>
-          
-      </div>
-    </div>
-
-    <footer
-      id="footer-section"
-      class="penci-footer-social-media penci-lazy footer-social-remove-circle"
-    >
-      <div class="container-footer">
-        <div class="footer-socials-section">
-          <ul class="footer-socials">
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-facebook"></i><span>Facebook</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-twitter"></i><span>Twitter</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-google-plus"></i><span>Google +</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-instagram"></i><span>Instagram</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-pinterest"></i><span>Pinterest</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-tumblr"></i><span>Tumblr</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-youtube-play"></i><span>Youtube</span></a
-              >
-            </li>
-            <li>
-              <a href="mailto:phanngocanh11@gmail.com"
-                ><i class="bi bi-envelope-o"></i><span>Email</span></a
-              >
-            </li>
-            <li>
-              <a href="#" target="_blank"
-                ><i class="bi bi-snapchat-ghost"></i><span>Snapchat</span></a
-              >
+        <nav class="nav">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--add-recipe">
+                <svg class="nav__icon">
+                  <use href="/img/icons.svg#icon-edit"></use>
+                </svg>
+                <span>Add recipe</span>
+              </button>
             </li>
           </ul>
+        </nav>
+      </header>
+
+      <div id="wrapper">
+        <div id="form-login">
+          <h1 class="form-heading">Log In</h1>
+          <form method="POST" action="/login">
+            <div class="form-group">
+              <i class="far fa-user"></i>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                placeholder="Tên đăng nhập"
+              />
+            </div>
+            <div class="form-group">
+              <i class="fas fa-key"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="Mật khẩu"
+              />
+            </div>
+
+            <button type="submit" class="form-submit">Sign In</button>
+          </form>
         </div>
-        <div class="footer-logo-copyright footer-not-logo footer-not-gotop">
-          <div class="footer-menu-wrap">
-            <ul id="menu-footer-menu" class="footer-menu">
-              <li
-                id="menu-item-1175"
-                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1175"
-              >
-                <a href="https://www.esheepkitchen.com/home/">Home</a>
+      </div>
+
+      <footer
+        id="footer-section"
+        class="penci-footer-social-media penci-lazy footer-social-remove-circle"
+      >
+        <div class="container-footer">
+          <div class="footer-socials-section">
+            <ul class="footer-socials">
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-facebook"></i><span>Facebook</span></a
+                >
               </li>
-              <li
-                id="menu-item-1174"
-                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1174"
-              >
-                <a href="https://www.esheepkitchen.com/about-me/">About me</a>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-twitter"></i><span>Twitter</span></a
+                >
               </li>
-              <li
-                id="menu-item-1176"
-                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1176"
-              >
-                <a href="https://www.esheepkitchen.com/cookbooks/"
-                  >Cookbooks</a
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-google-plus"></i><span>Google +</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-instagram"></i><span>Instagram</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-pinterest"></i><span>Pinterest</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-tumblr"></i><span>Tumblr</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-youtube-play"></i><span>Youtube</span></a
+                >
+              </li>
+              <li>
+                <a href="mailto:phanngocanh11@gmail.com"
+                  ><i class="bi bi-envelope-o"></i><span>Email</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi bi-snapchat-ghost"></i><span>Snapchat</span></a
                 >
               </li>
             </ul>
           </div>
+          <div class="footer-logo-copyright footer-not-logo footer-not-gotop">
+            <div class="footer-menu-wrap">
+              <ul id="menu-footer-menu" class="footer-menu">
+                <li
+                  id="menu-item-1175"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1175"
+                >
+                  <a href="https://www.esheepkitchen.com/home/">Home</a>
+                </li>
+                <li
+                  id="menu-item-1174"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1174"
+                >
+                  <a href="https://www.esheepkitchen.com/about-me/">About me</a>
+                </li>
+                <li
+                  id="menu-item-1176"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1176"
+                >
+                  <a href="https://www.esheepkitchen.com/cookbooks/"
+                    >Cookbooks</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="penci-go-to-top-floating show-up">
+            <i class="fa fa-angle-up"></i>
+          </div>
         </div>
-        <div class="penci-go-to-top-floating show-up">
-          <i class="fa fa-angle-up"></i>
-        </div>
-      </div>
-    </footer>
-  </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-</body>
+      </footer>
+    </div>
+  </body>
 </html>
