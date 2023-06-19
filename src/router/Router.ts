@@ -8,22 +8,21 @@ import paginate from "express-paginate";
 import { Like } from "typeorm";
 import bcrypt from "bcrypt";
 import { user } from "../entity/user";
-import session from "express-session";
+import session,{SessionOptions } from "express-session";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
 Router.use(paginate.middleware(9, 50));
 
-Router.use(
-  session({
-    secret: "your_secret_key",
-    resave: false,
-    saveUninitialized: true,
-    cookie:{}
-  })
-);
+const sessionOptions: SessionOptions = {
+  secret: 'your-secret-key', // Thay thế bằng một khóa bảo mật bất kỳ
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false, maxAge: 60000 }, // Thời gian sống session là 60 giây (đơn vị tính bằng mili giây)
+};
 const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
 const userRepository = AppDataSource.getRepository(user);
+
 
 AppDataSource.initialize()
   .then(() => {
@@ -32,6 +31,27 @@ AppDataSource.initialize()
   .catch((error) => console.log(error));
 //Get all recipe 
 //Login
+
+Router.use(session(sessionOptions));
+Router.use((req: Request, res: Response, next) => {
+  if (req.session) {
+    // Kiểm tra nếu đã quá thời gian sống cho phép
+    const currentTime = new Date().getTime();
+    const sessionExpirationTime = req.session.lastActiveTime + sessionOptions.cookie.maxAge;
+    if (currentTime > sessionExpirationTime) {
+      // Hủy bỏ session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Lỗi khi hủy bỏ session:', err);
+        }
+      });
+    } else {
+      // Cập nhật thời gian hoạt động mới nhất cho session
+      req.session.lastActiveTime = currentTime;
+    }
+  }
+  next();
+});
 
 Router.post("/login", async (req: Request, res: Response) => {
   const { username: username, password } = req.body;
@@ -52,6 +72,11 @@ Router.post("/login", async (req: Request, res: Response) => {
       return;
     }
     if (req.session) {
+      // Kiểm tra nếu session chưa có thời gian hoạt động
+
+      if (!req.session.lastActiveTime) {
+        req.session.lastActiveTime = new Date().getTime();
+      }
       // Thực hiện các thao tác với session
       req.session.loggedIn = true; // Đặt trạng thái đăng nhập thành true trong session
       req.session.user = {
