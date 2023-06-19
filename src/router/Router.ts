@@ -6,13 +6,23 @@ import { request } from "http";
 import bodyParser from "body-parser";
 import paginate from "express-paginate";
 import { Like } from "typeorm";
-
+import bcrypt from "bcrypt";
+import { user } from "../entity/user";
+import session from "express-session";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
 Router.use(paginate.middleware(9, 50));
 
+Router.use(
+  session({
+    secret: "your_secret_key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
+const userRepository = AppDataSource.getRepository(user);
 
 AppDataSource.initialize()
   .then(() => {
@@ -20,23 +30,64 @@ AppDataSource.initialize()
   })
   .catch((error) => console.log(error));
 //Get all recipe 
+//Login
+
+Router.post("/login", async (req: Request, res: Response) => {
+  const { username: name, password } = req.body;
+  req.session.loggedIn = false;
+  try {
+    const user = await userRepository.findOne({ where: { name } });
+    if (!user) {
+      res.render("login", { error: "Tài khoản không tồn tại" });
+      return;
+    }
+    // Mã hóa mật khẩu
+    // const password = "admin";
+    // const saltRounds = 10;
+    // const hashedPassword = bcrypt.hashSync(password, saltRounds);
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      res.render("login", { error: "Mật khẩu không chính xác" });
+      return;
+    }
+    if (req.session) {
+      // Thực hiện các thao tác với session
+      req.session.loggedIn = true; // Đặt trạng thái đăng nhập thành true trong session
+      req.session.user = {
+        name,
+        role: user.role,
+      };
+    }
+    res.redirect("/"); // Chuyển hướng đến trang dashboard
+    // Đăng nhập thành công, thực hiện các logic bổ sung
+  } catch (error) {
+    console.error("Error:", error);
+    res.render("login", { error: "Đã xảy ra lỗi" });
+  }
+});
+
 Router.get("/", async (req: Request, res: Response) => {
   try {
-    // const items: Item[] = await ItemService.findAll();
-    const items = await recipeRepository.find();
-    const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
-    const itemCount: number = items.length; // Tổng số công thức
-    const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
-    const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
-    const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
-    const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
-    const recipeList = items.slice(startIndex, endIndex);
-    res.render("index", {
-      items: recipeList,
-      pageCount,
-      itemCount,
-      pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
-    });
+    if (req.session.loggedIn) {
+      // const items: Item[] = await ItemService.findAll();
+      const items = await recipeRepository.find();
+      const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
+      const itemCount: number = items.length; // Tổng số công thức
+      const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
+      const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
+      const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
+      const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
+      const recipeList = items.slice(startIndex, endIndex);
+      console.log(req.session.user);
+      res.render("index", {
+        items: recipeList,
+        pageCount,
+        itemCount,
+        pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
+      });
+    } else {
+      res.redirect("/login");
+    }
   } catch (e: any) {
     res.status(500).send(e.message);
   }
