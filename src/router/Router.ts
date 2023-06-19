@@ -94,7 +94,6 @@ Router.post("/login", async (req: Request, res: Response) => {
 Router.get("/", async (req: Request, res: Response) => {
   try {
     if (req.session.loggedIn) {
-      // const items: Item[] = await ItemService.findAll();
       const items = await recipeRepository.find();
       const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
       const itemCount: number = items.length; // Tổng số công thức
@@ -103,8 +102,10 @@ Router.get("/", async (req: Request, res: Response) => {
       const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
       const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
       const recipeList = items.slice(startIndex, endIndex);
-      
+      console.log(req.session.user);
+      const role = req.session.user.role;
       res.render("index", {
+        role,
         items: recipeList,
         pageCount,
         itemCount,
@@ -211,9 +212,9 @@ Router.get("/:id", async (req: Request, res: Response) => {
           item.ingredients6,
         ];
         
-
+        const role = req.session.user.role;
         if (item) {
-          res.render("detail", { igre, reci });
+          res.render("detail", { role, igre, reci });
         }
       }
     } else {
@@ -308,28 +309,38 @@ Router.post("/search", async (req: Request, res: Response) => {
   const items = await recipeRepository.findBy({
     title: Like("%" + name + "%"),
   });
-
-  try {
-    // const items: Item[] = await ItemService.findAll();
-  
-    const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
-    const itemCount: number = items.length; // Tổng số công thức
-    const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
-    const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
-    const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
-    const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
-    const recipeList = items.slice(startIndex, endIndex);
-    res.render("index", {
-      items: recipeList,
-      pageCount,
-      itemCount,
-      pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
-    });
-  } catch (e: any) {
-    res.status(500).send(e.message);
+  if (req.session.loggedIn) {
+    try {
+      // const items: Item[] = await ItemService.findAll();
+    
+      const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
+      const itemCount: number = items.length; // Tổng số công thức
+      const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
+      const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
+      const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
+      const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
+      const recipeList = items.slice(startIndex, endIndex);
+      const role = req.session.user.role;
+      res.render("index", {
+        role,
+        items: recipeList,
+        pageCount,
+        itemCount,
+        pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
+      });
+    } catch(e:any)
+    {
+      res.status(500).send(e.message)
+    }
+    
   }
-
+  else {
+    res.redirect("/login");
+  }
 });
-
-
+Router.get("/user", async (req: Request, res: Response) => {
+  const user = await userRepository.find();
+  const userInfo = await userInfoRepository.find();
+  res.render("listUser", { user, userInfo });
+});
 

@@ -6,8 +6,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-    @Column({ unique: true ,length:100})
-    username: string
+  @Column({ unique: true ,length:100})
+  username: string
 
   @Column({
     length: 100,
