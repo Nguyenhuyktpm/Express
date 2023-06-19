@@ -8,7 +8,7 @@ import paginate from "express-paginate";
 import { Like } from "typeorm";
 import bcrypt from "bcrypt";
 import { user } from "../entity/user";
-import session from "express-session";
+import session, { SessionOptions } from "express-session";
 import { infoUser } from "../entity/infoUser";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
