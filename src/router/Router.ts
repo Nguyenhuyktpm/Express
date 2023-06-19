@@ -7,9 +7,9 @@ import bodyParser from "body-parser";
 import paginate from "express-paginate";
 import { Like } from "typeorm";
 import bcrypt from "bcrypt";
-import { user } from "../entity/user";
-import session, { SessionOptions } from "express-session";
+import { User } from "../entity/user";
 import { userInfo } from "os";
+import session, { SessionOptions } from "express-session";
 import { infoUser } from "../entity/infoUser";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
@@ -24,9 +24,9 @@ const sessionOptions: SessionOptions = {
     maxAge: 60000,
   }, // Thời gian sống session là 60 giây (đơn vị tính bằng mili giây)
 };
-const recipeRepository = AppDataSource.getRepository(Recipes);
+export const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
-const userRepository = AppDataSource.getRepository(user);
+export const userRepository = AppDataSource.getRepository(User);
 const userInfoRepository = AppDataSource.getRepository(infoUser);
 
 AppDataSource.initialize()
@@ -87,6 +87,7 @@ Router.post("/login", async (req: Request, res: Response) => {
         idUser: user.id,
         idInfoUser: infoUser.id,
         username,
+        id_user: user.id,
         role: user.role,
       };
     }
@@ -134,7 +135,7 @@ Router.post("/register", async (req: Request, res: Response) => {
     // Mã hóa mật khẩu
     const saltRounds = 10;
     const passwordHass = bcrypt.hashSync(infoUser1.password, saltRounds);
-    const users = new user();
+    const users = new User();
     users.username = infoUser1.username;
     users.password = passwordHass;
     users.role = "member";
@@ -388,8 +389,18 @@ Router.delete("/(:id)", async (req: Request, res: Response) => {
   }
 });
 
+Router.get("/user", async (req: Request, res: Response) => {
+  const user = await userRepository.find();
+  const userInfo = await userInfoRepository.find();
+  res.render("listUser", { user, userInfo });
+});
 // searching recipe
 Router.post("/search", async (req: Request, res: Response) => {
+  const name = req.body.search;
+
+  const items = await recipeRepository.findBy({
+    title: Like("%" + name + "%"),
+  });
   if (req.session.loggedIn) {
     const name = req.body.search;
 

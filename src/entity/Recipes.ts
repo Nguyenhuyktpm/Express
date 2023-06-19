@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany } from "typeorm"
 import { Ingredients } from "./Ingredients"
+import { User } from "./user"
 
 
 @Entity()
@@ -29,4 +30,9 @@ export class Recipes {
 
     @Column()
     socialRank:number
+
+    
+    @ManyToMany(() => User, (user) => user.recipes)
+    users: User[]
+
 }
