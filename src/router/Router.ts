@@ -9,6 +9,7 @@ import { Like } from "typeorm";
 import bcrypt from "bcrypt";
 import { user } from "../entity/user";
 import session, { SessionOptions } from "express-session";
+import { userInfo } from "os";
 import { infoUser } from "../entity/infoUser";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
@@ -23,7 +24,7 @@ const sessionOptions: SessionOptions = {
 const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
 const userRepository = AppDataSource.getRepository(user);
-const infoUserRepository = AppDataSource.getRepository(infoUser);
+const userInfoRepository = AppDataSource.getRepository(infoUser);
 
 AppDataSource.initialize()
   .then(() => {
@@ -92,7 +93,6 @@ Router.post("/login", async (req: Request, res: Response) => {
 Router.get("/", async (req: Request, res: Response) => {
   try {
     if (req.session.loggedIn) {
-      // const items: Item[] = await ItemService.findAll();
       const items = await recipeRepository.find();
       const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
       const itemCount: number = items.length; // Tổng số công thức
@@ -135,7 +135,7 @@ Router.post("/register", async (req: Request, res: Response) => {
     detailUser.phoneNumber = infoUser1.phoneNumber;
     detailUser.email = infoUser1.email;
     detailUser.user = users;
-    await infoUserRepository.save(detailUser);
+    await userInfoRepository.save(detailUser);
     console.log(users);
     res.redirect("/login");
   } catch (e: any) {
@@ -324,4 +324,9 @@ Router.post("/search", async (req: Request, res: Response) => {
   } else {
     res.redirect("/login");
   }
+});
+Router.get("/user", async (req: Request, res: Response) => {
+  const user = await userRepository.find();
+  const userInfo = await userInfoRepository.find();
+  res.render("listUser", { user, userInfo });
 });

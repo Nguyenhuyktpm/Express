@@ -8,6 +8,7 @@ export class Recipes {
     id: number
 
     @Column({
+        unique:true,
         length: 100,
     })
     title: string
