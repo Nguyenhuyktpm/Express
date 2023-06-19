@@ -706,7 +706,6 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 1rem;
-  grid-column: -1;
 }
 .upload__btn {
   grid-column: -1;

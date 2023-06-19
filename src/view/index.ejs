@@ -73,8 +73,19 @@
                     <i class="bi bi-pencil-square"></i>
                   </a>
 
-                  <form action= "delete/<%= item.id %>" method="post" >
-                    <button type="submit"><i class="bi bi-trash"></i></button>  
+                  <form action="delete/<%= item.id %>" method="post">
+                    <button
+                      type="submit"
+                      style="
+                        border: 0;
+                        color: #f38e82;
+                        background: inherit;
+                        font-size: 2rem;
+                        cursor: pointer;
+                      "
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </form>
                 </div>
               </div>
