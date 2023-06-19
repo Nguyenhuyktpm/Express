@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
       rel="stylesheet"
@@ -17,15 +19,16 @@
 
     <title>forkify // Search over 1,000,000 recipes</title>
   </head>
-
   <body>
     <div class="container">
       <header class="header">
         <a href="/">
           <img src="/img/logo.png" alt="Logo" class="header__logo" />
         </a>
-        <form class="search">
+
+        <form class="search" action="/search" method="post">
           <input
+            name="search"
             type="text"
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
@@ -48,38 +51,17 @@
                 <span>Add recipe</span>
               </button>
             </li>
-            <li class="nav__item">
-              <div class="bookmarks">
-                <ul class="bookmarks__list">
-                 
-                  <!-- <li class="preview">
-                    <a class="preview__link" href="#23456">
-                      <figure class="preview__fig">
-                        <img src="/img/test-1.jpg" alt="Test" />
-                      </figure>
-                      <div class="preview__data">
-                        <h4 class="preview__name">
-                          Pasta with Tomato Cream ...
-                        </h4>
-                        <p class="preview__publisher">The Pioneer Woman</p>
-                      </div>
-                    </a>
-                  </li> -->
-                </ul>
-              </div>
-            </li>
           </ul>
         </nav>
       </header>
-      
-        <div class="recipe">
+
+      <div class="recipe">
         <figure class="recipe__fig">
          
           <h1 class="recipe__title">
             <span><%= reci.title %></span>
           </h1>
         </figure>
-
         <div class="recipe__details">
           <div class="recipe__info">
             <svg class="recipe__info-icon">
@@ -115,11 +97,6 @@
             </svg>
           </div>
         </div>
-
-       
-
-
-
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
@@ -159,162 +136,92 @@
        
 
     </div>
-    <footer
-    id="footer-section"
-    class="penci-footer-social-media penci-lazy footer-social-remove-circle"
-  >
-    <div class="container-footer">
-      <div class="footer-socials-section">
-        <ul class="footer-socials">
-          <li>
-            <a href="#" target="_blank"
-              ><i class="bi bi-facebook"></i><span>Facebook</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-twitter"></i><span>Twitter</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-google-plus"></i><span>Google +</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-instagram"></i><span>Instagram</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-pinterest"></i><span>Pinterest</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-tumblr"></i><span>Tumblr</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-youtube-play"></i><span>Youtube</span></a
-            >
-          </li>
-          <li>
-            <a href="mailto:phanngocanh11@gmail.com"
-              ><i class="fa fa-envelope-o"></i><span>Email</span></a
-            >
-          </li>
-          <li>
-            <a href="#" target="_blank"
-              ><i class="fa fa-snapchat-ghost"></i><span>Snapchat</span></a
-            >
-          </li>
-        </ul>
-      </div>
-      <div class="footer-logo-copyright footer-not-logo footer-not-gotop">
-        <div class="footer-menu-wrap">
-          <ul id="menu-footer-menu" class="footer-menu">
-            <li
-              id="menu-item-1175"
-              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1175"
-            >
-              <a href="https://www.esheepkitchen.com/home/">Home</a>
-            </li>
-            <li
-              id="menu-item-1174"
-              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1174"
-            >
-              <a href="https://www.esheepkitchen.com/about-me/">About me</a>
-            </li>
-            <li
-              id="menu-item-1176"
-              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1176"
-            >
-              <a href="https://www.esheepkitchen.com/cookbooks/"
-                >Cookbooks</a
-              >
-            </li>
-          </ul>
+      <footer
+        id="footer-section"
+        class="penci-footer-social-media penci-lazy footer-social-remove-circle"
+      >
+        <div class="container-footer">
+          <div class="footer-socials-section">
+            <ul class="footer-socials">
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="bi"></i><span>Facebook</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-twitter"></i><span>Twitter</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-google-plus"></i><span>Google +</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-instagram"></i><span>Instagram</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-pinterest"></i><span>Pinterest</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-tumblr"></i><span>Tumblr</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-youtube-play"></i><span>Youtube</span></a
+                >
+              </li>
+              <li>
+                <a href="mailto:phanngocanh11@gmail.com"
+                  ><i class="fa fa-envelope-o"></i><span>Email</span></a
+                >
+              </li>
+              <li>
+                <a href="#" target="_blank"
+                  ><i class="fa fa-snapchat-ghost"></i><span>Snapchat</span></a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-logo-copyright footer-not-logo footer-not-gotop">
+            <div class="footer-menu-wrap">
+              <ul id="menu-footer-menu" class="footer-menu">
+                <li
+                  id="menu-item-1175"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1175"
+                >
+                  <a href="https://www.esheepkitchen.com/home/">Home</a>
+                </li>
+                <li
+                  id="menu-item-1174"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1174"
+                >
+                  <a href="https://www.esheepkitchen.com/about-me/">About me</a>
+                </li>
+                <li
+                  id="menu-item-1176"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1176"
+                >
+                  <a href="https://www.esheepkitchen.com/cookbooks/"
+                    >Cookbooks</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="penci-go-to-top-floating show-up">
+            <i class="fa fa-angle-up"></i>
+          </div>
         </div>
-      </div>
-      <div class="penci-go-to-top-floating show-up">
-        <i class="fa fa-angle-up"></i>
-      </div>
-    </div>
-  </footer>
-    <div class="overlay hidden"></div>
-    <div class="add-recipe-window hidden">
-      <button class="btn--close-modal">&times;</button>
-      <form class="upload">
-        <div class="upload__column">
-          <h3 class="upload__heading">Recipe data</h3>
-          <label>Title</label>
-          <input value="TEST122" required name="title" type="text" />
-          <label>URL</label>
-          <input value="TEST122" required name="sourceUrl" type="text" />
-          <label>Image URL</label>
-          <input value="TEST122" required name="image" type="text" />
-          <label>Publisher</label>
-          <input value="TEST122" required name="publisher" type="text" />
-          <label>Prep time</label>
-          <input value="23" required name="cookingTime" type="number" />
-          <label>Servings</label>
-          <input value="23" required name="servings" type="number" />
-        </div>
-
-        <div class="upload__column">
-          <h3 class="upload__heading">Ingredients</h3>
-          <label>Ingredient 1</label>
-          <input
-            value="0.5,kg,Rice"
-            type="text"
-            required
-            name="ingredient-1"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 2</label>
-          <input
-            value="1,,Avocado"
-            type="text"
-            name="ingredient-2"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 3</label>
-          <input
-            value=",,salt"
-            type="text"
-            name="ingredient-3"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 4</label>
-          <input
-            type="text"
-            name="ingredient-4"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 5</label>
-          <input
-            type="text"
-            name="ingredient-5"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-          <label>Ingredient 6</label>
-          <input
-            type="text"
-            name="ingredient-6"
-            placeholder="Format: 'Quantity,Unit,Description'"
-          />
-        </div>
-
-        <button class="btn upload__btn">
-          <svg>
-            <use href="/img/icons.svg#icon-upload-cloud"></use>
-          </svg>
-          <span>Upload</span>
-        </button>
-      </form>
+      </footer>
     </div>
   </body>
+  <script src="js/index.js"></script>
 </html>

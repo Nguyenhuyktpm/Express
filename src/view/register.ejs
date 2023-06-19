@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/login.css" />
 
-    <title>Log In</title>
+    <title>Đăng kí</title>
   </head>
   <body>
     <div class="container">
@@ -31,10 +31,21 @@
           <img src="/img/logo.png" alt="Logo" class="header__logo" />
         </a>
       </header>
+
       <div id="wrapper">
         <div id="form-login">
-          <h1 class="form-heading">Log In</h1>
-          <form method="POST" action="/login">
+          <h1 class="form-heading">Đăng kí</h1>
+          <form method="POST" action="/register">
+            <div class="form-group">
+              <i class="fa-regular fa-address-card"></i>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-input"
+                placeholder="Họ và tên"
+              />
+            </div>
             <div class="form-group">
               <i class="far fa-user"></i>
               <input
@@ -55,8 +66,28 @@
                 placeholder="Mật khẩu"
               />
             </div>
+            <div class="form-group">
+              <i class="fa-solid fa-phone"></i>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                class="form-input"
+                placeholder="Số điện thoại"
+              />
+            </div>
+            <div class="form-group">
+              <i class="fa-regular fa-envelope"></i>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="email"
+              />
+            </div>
 
-            <button type="submit" class="form-submit">Sign In</button>
+            <button type="submit" class="form-submit">Đăng kí</button>
           </form>
         </div>
       </div>
