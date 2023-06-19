@@ -18,6 +18,7 @@ Router.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
+    cookie:{}
   })
 );
 const recipeRepository = AppDataSource.getRepository(Recipes);
@@ -33,10 +34,10 @@ AppDataSource.initialize()
 //Login
 
 Router.post("/login", async (req: Request, res: Response) => {
-  const { username: name, password } = req.body;
+  const { username: username, password } = req.body;
   req.session.loggedIn = false;
   try {
-    const user = await userRepository.findOne({ where: { name } });
+    const user = await userRepository.findOne({ where: { username } });
     if (!user) {
       res.render("login", { error: "Tài khoản không tồn tại" });
       return;
@@ -54,7 +55,7 @@ Router.post("/login", async (req: Request, res: Response) => {
       // Thực hiện các thao tác với session
       req.session.loggedIn = true; // Đặt trạng thái đăng nhập thành true trong session
       req.session.user = {
-        name,
+        username,
         role: user.role,
       };
     }
