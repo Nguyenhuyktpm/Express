@@ -33,6 +33,7 @@
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
           />
+
           <button class="btn search__btn">
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
@@ -44,12 +45,14 @@
         <nav class="nav">
           <ul class="nav__list">
             <li class="nav__item">
+              <% if(role ==="admin"){%>
               <button class="nav__btn nav__btn--add-recipe">
                 <svg class="nav__icon">
                   <use href="/img/icons.svg#icon-edit"></use>
                 </svg>
                 <span>Add recipe</span>
               </button>
+              <% }%>
             </li>
           </ul>
         </nav>
@@ -68,6 +71,7 @@
                   <h4 class="preview__title"><%= item.title %></h4>
                   <p class="preview__publisher"><%= item.publisher %></p>
                 </div>
+                <% if(role ==="admin"){%>
                 <div class="button--function">
                   <a href="/edit/<%= item.id %>">
                     <i class="bi bi-pencil-square"></i>
@@ -88,6 +92,7 @@
                     </button>
                   </form>
                 </div>
+                <% }%>
               </div>
             </a>
           </li>
