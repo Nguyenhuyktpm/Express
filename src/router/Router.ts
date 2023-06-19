@@ -9,6 +9,8 @@ import { Like } from "typeorm";
 import bcrypt from "bcrypt";
 import { user } from "../entity/user";
 import session,{SessionOptions } from "express-session";
+import { userInfo } from "os";
+import { infoUser } from "../entity/infoUser";
 export const Router = express.Router();
 Router.use(bodyParser.urlencoded({ extended: true }));
 Router.use(paginate.middleware(9, 50));
@@ -22,7 +24,7 @@ const sessionOptions: SessionOptions = {
 const recipeRepository = AppDataSource.getRepository(Recipes);
 const ingreRepository = AppDataSource.getRepository(Ingredients);
 const userRepository = AppDataSource.getRepository(user);
-
+const userInfoRepository = AppDataSource.getRepository(infoUser)
 
 AppDataSource.initialize()
   .then(() => {
@@ -196,12 +198,11 @@ Router.get("/edit/(:id)", async (req: Request, res: Response) => {
   const ingre = await ingreRepository.findOneBy({
     id_recip: recip,
   });
-  
-
   res.render("editRecipe", { recip, ingre });
 });
 //update recipe and ingredients
 Router.post("/update/:id", async (req: Request, res: Response) => {
+try {
   const id: any = parseInt(req.params.id, 10);
   const item = req.body;
   const recipeUpdate = await recipeRepository.findOneBy({
@@ -231,10 +232,14 @@ Router.post("/update/:id", async (req: Request, res: Response) => {
 
   const items = await recipeRepository.find();
   res.redirect("/");
+} catch (e:any) {
+  res.status(500).send(e.message)
+}
 });
 
 //Delete  recipe
 Router.post("/delete/(:id)", async (req: Request, res: Response) => {
+ try {
   const id: number = parseInt(req.params.id, 10);
   const recipe = await recipeRepository.findOneBy({
     id: id,
@@ -249,6 +254,9 @@ Router.post("/delete/(:id)", async (req: Request, res: Response) => {
   }
   await recipeRepository.remove(recipe);
   res.redirect("/");
+ } catch (e :any) {
+    res.status(500).send(e.message);
+ }
 });
 
 //searching recipe
@@ -281,3 +289,8 @@ Router.post("/search", async (req: Request, res: Response) => {
 
 });
 
+Router.get("/user",async(req:Request ,res: Response)=>{
+    const user = await userRepository.find();
+    const userInfo = await userInfoRepository.find();
+    res.render("listUser",{user,userInfo})
+})
