@@ -19,7 +19,7 @@ AppDataSource.initialize()
     // here you can start to work with your database
   })
   .catch((error) => console.log(error));
-
+//Get all recipe 
 Router.get("/", async (req: Request, res: Response) => {
   try {
     // const items: Item[] = await ItemService.findAll();
@@ -41,7 +41,7 @@ Router.get("/", async (req: Request, res: Response) => {
     res.status(500).send(e.message);
   }
 });
-
+// add a recipe or ingridient
 Router.post("/", async (req: Request, res: Response) => {
   try {
     const item = req.body;
@@ -52,7 +52,7 @@ Router.post("/", async (req: Request, res: Response) => {
     recipes.publisher = item.publisher;
     recipes.timetocook = item.cookingTime;
     recipes.publisherUrl = item.PublisherURL;
-    await recipeRepository.create(recipes);
+    await recipeRepository.save(recipes);
 
     //inre
     const ingredient = new Ingredients();
@@ -63,16 +63,16 @@ Router.post("/", async (req: Request, res: Response) => {
     ingredient.ingredients5 = item.ingredient5;
     ingredient.ingredients6 = item.ingredient6;
     ingredient.id_recip = recipes;
-    await ingreRepository.create(ingredient);
+    await ingreRepository.save(ingredient);
 
-    const items = await recipeRepository.find();
+    
 
-    res.render("index", { items });
+    res.redirect("/");
   } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
-
+//get recipe or open form add
 Router.get("/:id", async (req: Request, res: Response) => {
   const id: any = parseInt(req.params.id, 10);
   try {
@@ -92,19 +92,24 @@ Router.get("/:id", async (req: Request, res: Response) => {
         item.ingredients5,
         item.ingredients6,
       ];
-      console.log(igre);
+      
 
       if (item) {
         res.render("detail", { igre, reci });
       }
     } else if (req.params.id == "add") {
-      res.render("addRecipe");
+        res.render("addRecipe");
     }
+      else if (req.params.id == "login") {
+        res.render("login");
+      }
+    
+    
   } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
-
+// open form edit for recipe and ingredients
 Router.get("/edit/(:id)", async (req: Request, res: Response) => {
   const id: any = parseInt(req.params.id, 10);
   const recip = await recipeRepository.findOneBy({
@@ -114,11 +119,11 @@ Router.get("/edit/(:id)", async (req: Request, res: Response) => {
   const ingre = await ingreRepository.findOneBy({
     id_recip: recip,
   });
-  console.log(ingre);
+  
 
   res.render("editRecipe", { recip, ingre });
 });
-
+//update recipe and ingredients
 Router.post("/update/:id", async (req: Request, res: Response) => {
   const id: any = parseInt(req.params.id, 10);
   const item = req.body;
@@ -135,7 +140,7 @@ Router.post("/update/:id", async (req: Request, res: Response) => {
   recipeUpdate.publisher = item.publisher;
   recipeUpdate.publisherUrl = item.PublisherURL;
   recipeUpdate.timetocook = item.cookingTime;
-  recipeRepository.save(recipeUpdate);
+  await recipeRepository.save(recipeUpdate);
   //
   ingreUpdate.ingredients1 = item.ingredient1;
   ingreUpdate.ingredients2 = item.ingredient2;
@@ -145,14 +150,14 @@ Router.post("/update/:id", async (req: Request, res: Response) => {
   ingreUpdate.ingredients6 = item.ingredient6;
   ingreUpdate.id_recip = recipeUpdate;
 
-  ingreRepository.save(ingreUpdate);
+  await ingreRepository.save(ingreUpdate);
 
   const items = await recipeRepository.find();
   res.redirect("/");
 });
 
 //Delete  recipe
-Router.delete("/(:id)", async (req: Request, res: Response) => {
+Router.post("/delete/(:id)", async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   const recipe = await recipeRepository.findOneBy({
     id: id,
@@ -160,12 +165,16 @@ Router.delete("/(:id)", async (req: Request, res: Response) => {
   const ingre = await ingreRepository.findOneBy({
     id_recip: recipe,
   });
-  await ingreRepository.remove(ingre);
+  
+  if(ingre)
+  {
+    await ingreRepository.remove(ingre);
+  }
   await recipeRepository.remove(recipe);
   res.redirect("/");
 });
 
-// searching recipe
+//searching recipe
 Router.post("/search", async (req: Request, res: Response) => {
   const name = req.body.search;
 
@@ -173,5 +182,25 @@ Router.post("/search", async (req: Request, res: Response) => {
     title: Like("%" + name + "%"),
   });
 
-  res.render("search", { items });
+  try {
+    // const items: Item[] = await ItemService.findAll();
+  
+    const limit: number = 9; // Số lượng công thức hiển thị trên mỗi trang
+    const itemCount: number = items.length; // Tổng số công thức
+    const pageCount: number = Math.ceil(itemCount / limit); // Tổng số trang
+    const currentPage: any = req.originalUrl.match(/\d+/g)?.[0] || 1; // Trang hiện tại, mặc định là 1
+    const startIndex: number = (currentPage - 1) * limit; // Vị trí bắt đầu của danh sách công thức trên trang hiện tại
+    const endIndex: number = startIndex + limit; // Vị trí kết thúc của danh sách công thức trên trang hiện tại
+    const recipeList = items.slice(startIndex, endIndex);
+    res.render("index", {
+      items: recipeList,
+      pageCount,
+      itemCount,
+      pages: paginate.getArrayPages(req)(3, pageCount, currentPage),
+    });
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+
 });
+
