@@ -38,7 +38,7 @@
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
             </svg>
-            <span>Search</span>
+            <span>Tìm kiếm</span>
           </button>
         </form>
 
@@ -50,7 +50,7 @@
                 <svg class="nav__icon">
                   <use href="/img/icons.svg#icon-edit"></use>
                 </svg>
-                <span>Add recipe</span>
+                <span>Thêm công thức</span>
               </button>
               <% }%>
             </li>
@@ -132,7 +132,7 @@
 
       <form class="upload" action="/update/<%= recip.id %>" method="post">
         <div class="upload__column">
-          <h3 class="upload__heading">Recipe data</h3>
+          <h3 class="upload__heading">Công thức</h3>
           <label>Title</label>
           <input value="<%= recip.title %>" required name="title" type="text" />
           <label>PublisherURL</label>
@@ -165,7 +165,7 @@
           />
         </div>
         <div class="upload__column">
-          <h3 class="upload__heading">Ingredients</h3>
+          <h3 class="upload__heading">Thành phần</h3>
           <label>Ingredient 1</label>
           <input
             value="<%= ingre.ingredients1 %>"

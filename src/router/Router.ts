@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 import paginate from "express-paginate";
 import { Like } from "typeorm";
 import bcrypt from "bcrypt";
-import { User } from "../entity/user";
+import { User } from "../entity/User";
 import { userInfo } from "os";
 import session, { SessionOptions } from "express-session";
 import { infoUser } from "../entity/infoUser";
@@ -261,7 +261,7 @@ Router.post("/", async (req: Request, res: Response) => {
       recipes.publisher = item.publisher;
       recipes.timetocook = item.cookingTime;
       recipes.publisherUrl = item.PublisherURL;
-      await recipeRepository.create(recipes);
+      await recipeRepository.save(recipes);
 
       //inre
       const ingredient = new Ingredients();
@@ -272,7 +272,7 @@ Router.post("/", async (req: Request, res: Response) => {
       ingredient.ingredients5 = item.ingredient5;
       ingredient.ingredients6 = item.ingredient6;
       ingredient.id_recip = recipes;
-      await ingreRepository.create(ingredient);
+      await ingreRepository.save(ingredient);
 
       const items = await recipeRepository.find();
 
@@ -298,7 +298,9 @@ Router.get("/:id", async (req: Request, res: Response) => {
         const item = await ingreRepository.findOneBy({
           id_recip: reci,
         });
-
+        console.log(reci);
+        const imageUrl = reci.imageUrl;
+        const publisherUrl = reci.publisherUrl;
         const igre = [
           item.ingredients1,
           item.ingredients2,
@@ -308,7 +310,14 @@ Router.get("/:id", async (req: Request, res: Response) => {
           item.ingredients6,
         ];
         if (item) {
-          res.render("detail", { role, igre, reci, nameUser });
+          res.render("detail", {
+            role,
+            igre,
+            reci,
+            nameUser,
+            imageUrl,
+            publisherUrl,
+          });
         }
       }
     } else {

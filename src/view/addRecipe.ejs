@@ -38,7 +38,7 @@
             <svg class="search__icon">
               <use href="/img/icons.svg#icon-search"></use>
             </svg>
-            <span>Search</span>
+            <span>Tìm kiếm</span>
           </button>
         </form>
 
@@ -50,7 +50,7 @@
                 <svg class="nav__icon">
                   <use href="/img/icons.svg#icon-edit"></use>
                 </svg>
-                <span>Add recipe</span>
+                <span>Thêm công thức</span>
               </button>
               <% }%>
             </li>
@@ -132,26 +132,25 @@
 
       <form class="upload" action="/" method="post">
         <div class="upload__column">
-          <h3 class="upload__heading">Recipe data</h3>
+          <h3 class="upload__heading">Công thức</h3>
           <label>Title</label>
-          <input value="TEST122" required name="title" type="text" />
+          <input required name="title" type="text" />
           <label>PublisherURL</label>
-          <input value="TEST122" required name="PublisherURL" type="text" />
+          <input required name="PublisherURL" type="text" />
           <label>Image URL</label>
-          <input value="TEST122" required name="image" type="text" />
+          <input required name="image" type="text" />
           <label>Publisher</label>
-          <input value="TEST122" required name="publisher" type="text" />
+          <input required name="publisher" type="text" />
           <label>Prep time</label>
-          <input value="23" required name="cookingTime" type="number" />
+          <input value="60" required name="cookingTime" type="number" />
           <label>Servings</label>
-          <input value="23" required name="servings" type="number" />
+          <input value="4" required name="servings" type="number" />
         </div>
 
         <div class="upload__column">
-          <h3 class="upload__heading">Ingredients</h3>
+          <h3 class="upload__heading">Thành phần</h3>
           <label>Ingredient 1</label>
           <input
-            value="0.5,kg,Rice"
             type="text"
             required
             name="ingredient1"
@@ -159,14 +158,13 @@
           />
           <label>Ingredient 2</label>
           <input
-            value="1,,Avocado"
             type="text"
             name="ingredient2"
             placeholder="Format: 'Quantity,Unit,Description'"
           />
           <label>Ingredient 3</label>
           <input
-            value=",,salt"
+
             type="text"
             name="ingredient3"
             placeholder="Format: 'Quantity,Unit,Description'"
